@@ -1,0 +1,451 @@
+{
+	"info": {
+		"_postman_id": "217bd23e-f826-4f34-81b9-41fc6e253200",
+		"name": "Week3-API-Test-Automation",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Happy Path",
+			"item": [
+				{
+					"name": "POST - Create User",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "d2b2271e-d556-44f0-9853-7138ee4e1487",
+								"exec": [
+									"// Status code & status text (Created)\r",
+									"pm.test(\"Status code is 201\", () => pm.response.to.have.status(201));\r",
+									"pm.test(\"Status text is Created\", () => pm.expect(pm.response.status).to.eql(\"Created\"));\r",
+									"\r",
+									"// Body contains id\r",
+									"let jsonData ={};\r",
+									"try { jsonData = pm.response.json(); } catch(e) {}\r",
+									"pm.test(\"Response has id\", () => pm.expect(jsonData).to.have.property(\"id\"));\r",
+									"\r",
+									"// Save id to environment for later requests\r",
+									"if (jsonData && jsonData.id) {\r",
+									"    pm.environment.set(\"user_id\", jsonData.id);\r",
+									"}"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"id": "e17d9b59-4478-4196-b51e-941903810691",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "x-api-key",
+								"value": "reqres-free-v1",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"name\": \"{{user_name}}\",\r\n  \"job\": \"{{user_job}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{base_url}}/api/users"
+					},
+					"response": []
+				},
+				{
+					"name": "POST - Register Successful",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "b235a4d7-23a6-4b6a-b5e0-b67ed71fb420",
+								"exec": [
+									"pm.test(\"Status code is 200\", () => pm.response.to.have.status(200));\r",
+									"pm.test(\"Status text is OK\", () => pm.expect(pm.response.status).to.eql(\"OK\"));\r",
+									"\r",
+									"let jsonData = pm.response.json();\r",
+									"pm.test(\"Response has token\", () => pm.expect(jsonData).to.have.property(\"token\"));"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"id": "1336b1d3-caef-48ac-b6a1-49f1504ce203",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "x-api-key",
+								"value": "reqres-free-v1",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"email\": \"eve.holt@reqres.in\",\r\n  \"password\": \"pistol\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{base_url}}/api/register"
+					},
+					"response": []
+				},
+				{
+					"name": "GET - List Users (page=2)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "ca094b00-d81c-47de-ae39-850702c3384c",
+								"exec": [
+									"pm.test(\"Status code is 200\", () => pm.response.to.have.status(200));\r",
+									"pm.test(\"Status text is OK\", () => pm.expect(pm.response.status).to.eql(\"OK\"));\r",
+									"\r",
+									"let jsonData = pm.response.json();\r",
+									"pm.test(\"Page is 2\", () => pm.expect(jsonData.page).to.eql(2));"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"id": "426e18ef-70df-4e57-b25f-2b81564b43aa",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/users?page=2",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"users"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "2"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET - Single User (positive)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "4412d75b-b948-47b5-b857-30c36bbc2e4e",
+								"exec": [
+									"pm.test(\"Status code is 200\", () => pm.response.to.have.status(200));\r",
+									"pm.test(\"Status text is OK\", () => pm.expect(pm.response.status).to.eql(\"OK\"));\r",
+									"\r",
+									"let jsonData = pm.response.json();\r",
+									"pm.test(\"User id is 2\", () => pm.expect(jsonData.data.id).to.eql(2));"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"id": "c1fa4131-fe60-4959-ac45-abd2ec16c423",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "x-api-key",
+								"value": "reqres-free-v1",
+								"type": "text"
+							}
+						],
+						"url": "{{base_url}}/api/users/2"
+					},
+					"response": []
+				},
+				{
+					"name": "PUT - Update User",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "dc9a84bf-1af4-4a5a-8c1c-0e394000b047",
+								"exec": [
+									"pm.test(\"Status code is 200\", () => pm.response.to.have.status(200));\r",
+									"pm.test(\"Status text is OK\", () => pm.expect(pm.response.status).to.eql(\"OK\"));\r",
+									"\r",
+									"let jsonData = pm.response.json();\r",
+									"pm.test(\"Job updated\", () => pm.expect(jsonData.job).to.eql(pm.environment.get(\"update_job\")));"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"id": "cd2cc483-544b-4279-b486-77c7b5e61f23",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "x-api-key",
+								"value": "reqres-free-v1",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"name\": \"{{update_name}}\",\r\n  \"job\": \"{{update_job}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{base_url}}/api/users/{{user_id}}"
+					},
+					"response": []
+				},
+				{
+					"name": "PATCH - Partial Update User",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "6c08e4df-2d59-4d51-a50d-f53a2c05de82",
+								"exec": [
+									"pm.test(\"Status code is 200\", () => pm.response.to.have.status(200));\r",
+									"pm.test(\"Status text is OK\", () => pm.expect(pm.response.status).to.eql(\"OK\"));\r",
+									"\r",
+									"let jsonData = pm.response.json();\r",
+									"pm.test(\"Job patched\", () => pm.expect(jsonData.job).to.eql(pm.environment.get(\"patch_job\")));"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"id": "85e30f1e-c1f1-4916-a4e9-8a5bbce5c0b3",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "x-api-key",
+								"value": "reqres-free-v1",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"job\": \"{{patch_job}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{base_url}}/api/users/{{user_id}}"
+					},
+					"response": []
+				},
+				{
+					"name": "DELETE - Delete User",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "ade07492-e26a-421c-ab43-a83a27f6fd03",
+								"exec": [
+									"pm.test(\"Status code is 204\", () => pm.response.to.have.status(204));\r",
+									"pm.test(\"Status text is No Content\", () => pm.expect(pm.response.status).to.eql(\"No Content\"));"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"id": "06cf4409-4c0c-43bd-8374-411158541a42",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "x-api-key",
+								"value": "reqres-free-v1",
+								"type": "text"
+							}
+						],
+						"url": "{{base_url}}/api/users/{{user_id}}"
+					},
+					"response": []
+				}
+			],
+			"id": "4c2fc128-906b-4110-b197-e1d0d291ce33"
+		},
+		{
+			"name": "Negative Tests",
+			"item": [
+				{
+					"name": "GET - Single User (Invalid ID)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "3d2aa2a1-e5f6-4ee3-a0eb-c808e7547527",
+								"exec": [
+									"pm.test(\"Status code is 404\", () => pm.response.to.have.status(404));\r",
+									"pm.test(\"Status text is Not Found\", () => pm.expect(pm.response.status).to.eql(\"Not Found\"));"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"id": "479d3227-5945-4714-978b-14a465179fd0",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "x-api-key",
+								"value": "reqres-free-v1",
+								"type": "text"
+							}
+						],
+						"url": "{{base_url}}/api/users/9999"
+					},
+					"response": []
+				},
+				{
+					"name": "POST - Create User (Empty Body)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "d9700c63-38e4-4df8-8c9a-e410509080fe",
+								"exec": [
+									"pm.test(\"Status code is 201 or 400\", () => {\r",
+									"    // Sometimes ReqRes accepts empty body, sometimes not\r",
+									"    pm.expect([201, 400]).to.include(pm.response.code);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"id": "b63d606e-acda-43af-8ac5-328970917876",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "x-api-key",
+								"value": "reqres-free-v1",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{base_url}}/api/users"
+					},
+					"response": []
+				},
+				{
+					"name": "POST - Register User (Missing Password)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "284afa72-8755-403f-9484-fc58ac6c02c3",
+								"exec": [
+									"pm.test(\"Status code is 400\", () => pm.response.to.have.status(400));\r",
+									"\r",
+									"pm.test(\"Status text is Bad Request\", () => {\r",
+									"    pm.expect(pm.response.status).to.eql(\"Bad Request\");\r",
+									"});\r",
+									"\r",
+									"let jsonData = {};\r",
+									"try { jsonData = pm.response.json(); } catch(e) {}\r",
+									"pm.test(\"Has error message\", () => {\r",
+									"    pm.expect(jsonData).to.have.property(\"error\");\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"id": "437276a4-bd22-4e30-9026-129ca5f5e7e1",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "x-api-key",
+								"value": "reqres-free-v1",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"email\": \"soso@example.com\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{base_url}}/api/register"
+					},
+					"response": []
+				}
+			],
+			"id": "89181a3d-9e9d-4ab3-a79e-68d14ab84a3e"
+		}
+	]
+}
