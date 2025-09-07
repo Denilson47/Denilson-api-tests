@@ -1,4 +1,4 @@
-name: Run Postman Collection (Postman CLI)
+name: Run Postman Tests
 
 on:
   push:
@@ -7,25 +7,18 @@ on:
     branches: [ "main" ]
 
 jobs:
-  postman-cli-run:
+  postman-tests:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repo
+      - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: '18'
-
       - name: Install Postman CLI
-        run: npm install -g postman-cli
-
-      - name: Postman login
-        env:
-          POSTMAN_API_KEY: ${{ secrets.POSTMAN_API_KEY }}
-        run: postman login --with-api-key $POSTMAN_API_KEY
-
-      - name: Run Collection via Postman CLI
         run: |
-          postman collection run 48187952-217bd23e-f826-4f34-81b9-41fc6e253200 -e 48187952-948fbfd3-0fa7-4c62-9cde-12d8b83e8d17 --reporters cli
+          curl -o- "https://dl-cli.pstmn.io/install/linux64.sh" | sh
+
+      - name: Login to Postman CLI
+        run: postman login --with-api-key ${{ secrets.POSTMAN_API_KEY }}
+
+      - name: Run Postman Collection
+        run: postman collection run "48187952-217bd23e-f826-4f34-81b9-41fc6e253200" -e "48187952-948fbfd3-0fa7-4c62-9cde-12d8b83e8d17"
