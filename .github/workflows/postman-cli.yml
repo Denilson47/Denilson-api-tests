@@ -1,0 +1,31 @@
+name: Run Postman Collection (Postman CLI)
+
+on:
+  push:
+    branches: [ "dev" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  postman-cli-run:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - name: Install Postman CLI
+        run: npm install -g postman-cli
+
+      - name: Postman login
+        env:
+          POSTMAN_API_KEY: ${{ secrets.POSTMAN_API_KEY }}
+        run: postman login --with-api-key $POSTMAN_API_KEY
+
+      - name: Run Collection via Postman CLI
+        run: |
+          postman collection run <collectionUID> -e <environmentUID> --reporters cli
