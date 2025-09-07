@@ -28,4 +28,4 @@ jobs:
 
       - name: Run Collection via Postman CLI
         run: |
-          postman collection run <collectionUID> -e <environmentUID> --reporters cli
+          postman collection run 48187952-217bd23e-f826-4f34-81b9-41fc6e253200 -e 48187952-948fbfd3-0fa7-4c62-9cde-12d8b83e8d17 --reporters cli
